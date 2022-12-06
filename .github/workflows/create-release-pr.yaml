@@ -7,7 +7,7 @@ on:
       - "apps/webapp/**/*"
 
 jobs:
-  require_label:
+  release_pr:
     runs-on: ubuntu-latest
     steps:
       - name: Check if relaese PR exists
@@ -25,17 +25,17 @@ jobs:
           if ((prs > 0)); then
               echo "exists=true" >> "$GITHUB_OUTPUT"
           fi
-        - name: Create pull request
-          if: '!steps.check.outputs.exists'
-          uses: actions/github-script@v6
-            with:
-              script: |
-                const { repo, owner } = context.repo;
-                const result = await github.rest.pulls.create({
-                  title: 'Release',
-                  owner,
-                  repo,
-                  head: '${{ github.ref_name }}',
-                  base: 'webapp-production',
-                  body: '${{ context.repo }}'
-                });
+      - name: Create pull request
+        if: '!steps.check.outputs.exists'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: 'Release',
+              owner,
+              repo,
+              head: '${{ github.ref_name }}',
+              base: 'webapp-production',
+              body: '${{ context.repo }}'
+            });
