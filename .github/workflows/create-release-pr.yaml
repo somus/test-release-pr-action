@@ -32,5 +32,5 @@ jobs:
         with:
           commit-message: Update report
           branch: development
-          base: webapp-production
+          base: main
           title: 'Release'
