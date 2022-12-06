@@ -37,5 +37,5 @@ jobs:
               repo,
               head: '${{ github.ref_name }}',
               base: 'webapp-production',
-              body: '${{ context.repo }}'
+              body: `${context.repo}`
             });
