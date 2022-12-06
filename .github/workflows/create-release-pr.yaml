@@ -27,15 +27,9 @@ jobs:
           fi
       - name: Create pull request
         if: '!steps.check.outputs.exists'
-        uses: actions/github-script@v6
+        uses: peter-evans/create-pull-request@v4
         with:
-          script: |
-            const { repo, owner } = context.repo;
-            const result = await github.rest.pulls.create({
-              title: 'Release',
-              owner,
-              repo,
-              head: '${{ github.ref_name }}',
-              base: 'webapp-production',
-              body: `${context.repo}`
-            });
+          commit-message: Update report
+          branch: development
+          base: webapp-production
+          title: 'Release'
