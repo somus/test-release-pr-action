@@ -28,9 +28,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create pull request
         if: '!steps.check.outputs.exists'
-        uses: peter-evans/create-pull-request@v4
+        uses: devops-infra/action-pull-request@v0.5.3
         with:
-          commit-message: Update report
-          branch: main
-          base: development
-          title: 'Release'
+          source_branch: development
+          target_branch: main
+          title: Release
+          body: ${{ github.event.commits[0].message }}
