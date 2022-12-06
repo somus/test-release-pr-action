@@ -31,6 +31,6 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update report
-          branch: development
-          base: main
+          branch: main
+          base: development
           title: 'Release'
