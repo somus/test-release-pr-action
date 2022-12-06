@@ -1,0 +1,41 @@
+name: Create release PR if it doesn't exist
+
+on:
+  push:
+    branches: ['development']
+    paths:
+      - "apps/webapp/**/*"
+
+jobs:
+  require_label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if relaese PR exists
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          prs=$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --json baseRefName,headRefName \
+              --jq '
+                  map(select(.baseRefName == "main" and .headRefName == "development"))
+                  | length
+              ')
+          if ((prs > 0)); then
+              echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+        - name: Create pull request
+          if: '!steps.check.outputs.exists'
+          uses: actions/github-script@v6
+            with:
+              script: |
+                const { repo, owner } = context.repo;
+                const result = await github.rest.pulls.create({
+                  title: 'Release',
+                  owner,
+                  repo,
+                  head: '${{ github.ref_name }}',
+                  base: 'webapp-production',
+                  body: '${{ context.repo }}'
+                });
